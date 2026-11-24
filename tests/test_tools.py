@@ -5,7 +5,7 @@ import pytest
 import tools
 
 
-def test_chat_raises_typed_error_when_ollama_is_unavailable(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_chat_raises_typed_error_with_original_cause(monkeypatch: pytest.MonkeyPatch) -> None:
     def unavailable(*args: object, **kwargs: object) -> None:
         raise OSError("connection refused")
 
@@ -17,7 +17,7 @@ def test_chat_raises_typed_error_when_ollama_is_unavailable(monkeypatch: pytest.
     assert isinstance(exc_info.value.__cause__, OSError)
 
 
-def test_generation_does_not_turn_provider_failure_into_content(
+def test_generation_does_not_turn_provider_failure_into_campaign_content(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     def unavailable(*args: object, **kwargs: object) -> None:
