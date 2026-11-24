@@ -12,6 +12,10 @@ import ollama
 from config import OLLAMA_MODEL, OLLAMA_HOST
 
 
+class LLMProviderError(RuntimeError):
+    """Raised when the configured local LLM provider cannot complete a request."""
+
+
 def _chat(system: str, user: str) -> str:
     """Call local Ollama model."""
     try:
@@ -24,8 +28,10 @@ def _chat(system: str, user: str) -> str:
             options={"temperature": 0.7}
         )
         return resp["message"]["content"].strip()
-    except Exception as e:
-        return f"[LLM ERROR – is Ollama running? ] {e}"
+    except Exception as exc:
+        raise LLMProviderError(
+            f"Local Ollama request failed for model {OLLAMA_MODEL!r}"
+        ) from exc
 
 
 def idea_generator(brief: str, brand_voice: Dict, skill_hints: Optional[Dict] = None) -> Dict[str, Any]:
